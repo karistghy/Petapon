@@ -1,2 +1,0 @@
-# Petapon
-Photo Gacha Machine
