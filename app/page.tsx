@@ -1,6 +1,7 @@
 "use client";
 
 import { useEffect, useMemo, useState } from "react";
+import { supabase } from "../lib/supabase";
 
 type Submission = {
   id: string;
@@ -10,7 +11,6 @@ type Submission = {
   createdAt: number;
 };
 
-const STORAGE_KEY = "petapon-submissions";
 const PULLS_KEY = "petapon-pulls";
 
 export default function Home() {
@@ -18,28 +18,57 @@ export default function Home() {
   const [name, setName] = useState("");
   const [caption, setCaption] = useState("");
   const [image, setImage] = useState("");
+  const [selectedFile, setSelectedFile] = useState<File | null>(null);
   const [pull, setPull] = useState<Submission | null>(null);
   const [isSpinning, setIsSpinning] = useState(false);
+  const [isUploading, setIsUploading] = useState(false);
   const [message, setMessage] = useState("");
 
   useEffect(() => {
-    const saved = localStorage.getItem(STORAGE_KEY);
+    loadSubmissions();
 
-    if (saved) {
-      try {
-        setSubmissions(JSON.parse(saved));
-      } catch {
-        setSubmissions([]);
-      }
-    } else {
-      setSubmissions([]);
-    }
+    const channel = supabase
+      .channel("petapon-submissions")
+      .on(
+        "postgres_changes",
+        {
+          event: "INSERT",
+          schema: "public",
+          table: "pets",
+        },
+        () => {
+          loadSubmissions();
+        }
+      )
+      .subscribe();
+
+    return () => {
+      supabase.removeChannel(channel);
+    };
   }, []);
 
-  const save = (next: Submission[]) => {
-    setSubmissions(next);
-    localStorage.setItem(STORAGE_KEY, JSON.stringify(next));
-  };
+  async function loadSubmissions() {
+    const { data, error } = await supabase
+      .from("pets")
+      .select("id, name, caption, image_url, created_at")
+      .order("created_at", { ascending: true });
+
+    if (error) {
+      console.error("Error loading pets:", error);
+      setMessage("Couldn't load the Petapon collection. ✿");
+      return;
+    }
+
+    const formatted: Submission[] = (data || []).map((item) => ({
+      id: item.id,
+      name: item.name || "Mystery Pet",
+      caption: item.caption || "No caption. Just vibes. ✨",
+      image: item.image_url,
+      createdAt: new Date(item.created_at).getTime(),
+    }));
+
+    setSubmissions(formatted);
+  }
 
   const preview = useMemo(() => image, [image]);
 
@@ -56,6 +85,8 @@ export default function Home() {
       return;
     }
 
+    setSelectedFile(file);
+
     const reader = new FileReader();
 
     reader.onload = () => {
@@ -66,27 +97,84 @@ export default function Home() {
     reader.readAsDataURL(file);
   }
 
-  function contribute() {
-    if (!image || !name.trim()) {
+  async function contribute() {
+    if (!selectedFile || !name.trim()) {
       setMessage("Add a photo and give your capsule a name first!");
       return;
     }
 
-    const item: Submission = {
-      id: crypto.randomUUID(),
-      name: name.trim(),
-      caption: caption.trim() || "No caption. Just vibes. ✨",
-      image,
-      createdAt: Date.now(),
-    };
+    setIsUploading(true);
+    setMessage("");
 
-    save([...submissions, item]);
+    try {
+      const fileExtension =
+        selectedFile.name.split(".").pop()?.toLowerCase() || "jpg";
 
-    setName("");
-    setCaption("");
-    setImage("");
+      const fileName = `${crypto.randomUUID()}.${fileExtension}`;
 
-    setMessage("Your capsule is in the machine! 🎟️");
+      const filePath = fileName;
+
+      const { error: uploadError } = await supabase.storage
+        .from("photos")
+        .upload(filePath, selectedFile, {
+          cacheControl: "3600",
+          upsert: false,
+          contentType: selectedFile.type,
+        });
+
+      if (uploadError) {
+        console.error("Upload error:", uploadError);
+        setMessage(
+          `Photo upload failed: ${uploadError.message}`
+        );
+        setIsUploading(false);
+        return;
+      }
+
+      const { data: publicUrlData } = supabase.storage
+        .from("photos")
+        .getPublicUrl(filePath);
+
+      const imageUrl = publicUrlData.publicUrl;
+
+      const { error: databaseError } = await supabase
+        .from("pets")
+        .insert({
+          name: name.trim(),
+          caption:
+            caption.trim() || "No caption. Just vibes. ✨",
+          image_url: imageUrl,
+        });
+
+      if (databaseError) {
+        console.error("Database error:", databaseError);
+
+        await supabase.storage
+          .from("photos")
+          .remove([filePath]);
+
+        setMessage(
+          `Couldn't save your capsule: ${databaseError.message}`
+        );
+
+        setIsUploading(false);
+        return;
+      }
+
+      await loadSubmissions();
+
+      setName("");
+      setCaption("");
+      setImage("");
+      setSelectedFile(null);
+
+      setMessage("Your capsule is in the machine! 🎟️");
+    } catch (error) {
+      console.error(error);
+      setMessage("Something went wrong while adding your capsule.");
+    }
+
+    setIsUploading(false);
   }
 
   async function spin() {
@@ -133,8 +221,8 @@ export default function Home() {
   }
 
   return (
-    <main className="page-shell">
-      <div className="retro-site">
+    <main>
+      <div className="site">
 
         {/* HEADER */}
 
@@ -217,7 +305,6 @@ export default function Home() {
               </div>
             </div>
 
-
             <div className="retro-box">
 
               <div className="box-heading pink-heading">
@@ -245,7 +332,6 @@ export default function Home() {
               </div>
 
             </div>
-
 
             <div className="retro-box">
 
@@ -275,7 +361,6 @@ export default function Home() {
 
             </div>
 
-
             <div className="counter-box">
 
               <span>CAPSULES</span>
@@ -287,7 +372,6 @@ export default function Home() {
             </div>
 
           </aside>
-
 
           {/* MAIN CONTENT */}
 
@@ -343,7 +427,6 @@ export default function Home() {
               </div>
 
             </div>
-
 
             {/* GACHAPON */}
 
@@ -416,7 +499,6 @@ export default function Home() {
 
                   </div>
 
-
                   <div className="gacha-copy">
 
                     <span className="tiny-label">
@@ -452,7 +534,6 @@ export default function Home() {
               </div>
 
             </div>
-
 
             {/* PULL RESULT */}
 
@@ -508,7 +589,6 @@ export default function Home() {
 
             )}
 
-
             {/* CONTRIBUTE */}
 
             <div
@@ -563,7 +643,6 @@ export default function Home() {
 
                   </label>
 
-
                   <div className="retro-form">
 
                     <label>
@@ -580,7 +659,6 @@ export default function Home() {
 
                     </label>
 
-
                     <label>
                       Caption
 
@@ -596,14 +674,15 @@ export default function Home() {
 
                     </label>
 
-
                     <button
                       className="contribute"
                       onClick={contribute}
+                      disabled={isUploading}
                     >
-                      ♡ add my capsule ♡
+                      {isUploading
+                        ? "♡ uploading..."
+                        : "♡ add my capsule ♡"}
                     </button>
-
 
                     {message && (
                       <p className="message">
@@ -618,7 +697,6 @@ export default function Home() {
               </div>
 
             </div>
-
 
             {/* COLLECTION */}
 
@@ -642,6 +720,7 @@ export default function Home() {
                       color: "#9b8880",
                     }}
                   >
+
                     <div
                       style={{
                         fontSize: "30px",
@@ -661,6 +740,7 @@ export default function Home() {
                       Be the first person to put
                       a capsule in the machine. ✿
                     </small>
+
                   </div>
 
                 ) : (
@@ -705,7 +785,6 @@ export default function Home() {
               </div>
 
             </div>
-
 
             {/* ABOUT */}
 
@@ -755,7 +834,6 @@ export default function Home() {
           </section>
 
         </div>
-
 
         {/* FOOTER */}
 
