@@ -1,0 +1,346 @@
+@import url('https://fonts.googleapis.com/css2?family=Patrick+Hand&family=Quicksand:wght@400;500;600;700&display=swap');
+
+* { box-sizing: border-box; }
+html { scroll-behavior: smooth; }
+
+:root {
+  --sky: #cce8f7;
+  --sky-dark: #a7d3e9;
+  --pink: #f3b4c8;
+  --pink-dark: #d77f9c;
+  --pink-light: #fff0f5;
+  --cream: #fffdf0;
+  --yellow: #fff0a7;
+  --yellow-dark: #d4bb65;
+  --blue: #cbe9f7;
+  --brown: #765c4b;
+  --line: #d7b79f;
+}
+
+body {
+  margin: 0;
+  color: var(--brown);
+  font-family: "Quicksand", "Trebuchet MS", Arial, sans-serif;
+  font-size: 13px;
+  line-height: 1.5;
+  background-color: var(--sky);
+  background-image:
+    linear-gradient(rgba(255,255,255,.42) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(255,255,255,.42) 1px, transparent 1px),
+    linear-gradient(rgba(245,180,200,.10) 50%, transparent 50%),
+    linear-gradient(90deg, rgba(245,180,200,.10) 50%, transparent 50%);
+  background-size: 8px 8px, 8px 8px, 16px 16px, 16px 16px;
+}
+
+button, input, textarea { font: inherit; }
+button { cursor: pointer; }
+
+.page-shell {
+  min-height: 100vh;
+  padding: 25px 12px 50px;
+}
+
+.retro-site {
+  width: min(920px, 100%);
+  margin: 0 auto;
+  background: var(--cream);
+  border: 2px solid white;
+  border-radius: 10px;
+  box-shadow: 0 0 0 5px rgba(255,255,255,.58), 0 10px 35px rgba(80,120,140,.20);
+  overflow: hidden;
+}
+
+/* HEADER */
+.site-header {
+  height: 205px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  text-align: center;
+  overflow: hidden;
+  background-color: #fff0f5;
+  background-image:
+    linear-gradient(rgba(232,174,193,.27) 1px, transparent 1px),
+    linear-gradient(90deg, rgba(232,174,193,.27) 1px, transparent 1px);
+  background-size: 13px 13px;
+  border-bottom: 2px solid #e1adbd;
+}
+
+.header-inner { position: relative; z-index: 2; }
+.mini-label { color: #9ebed0; font-size: 11px; font-weight: 700; letter-spacing: .2em; }
+
+.site-header h1 {
+  margin: 5px 0 4px;
+  color: #e18da8;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: clamp(55px, 10vw, 88px);
+  line-height: .85;
+  letter-spacing: 2px;
+  text-shadow: 3px 3px white, -2px -2px white, 2px -2px white, -2px 2px white;
+}
+
+.site-header h1 span { font-family: sans-serif; font-size: .45em; }
+.site-header p { margin: 8px 0 0; color: #86aec2; font-family: "Patrick Hand", cursive; font-size: 20px; letter-spacing: 2px; }
+
+.deco { position: absolute; color: white; font-size: 24px; animation: sparkle 2.4s ease-in-out infinite; }
+.deco-one { left: 14%; top: 30%; }
+.deco-two { right: 12%; top: 20%; color: #f4b4c8; }
+.deco-three { left: 20%; bottom: 16%; color: #efb1c4; }
+
+@keyframes sparkle { 0%,100% { opacity:.4; transform:scale(.8); } 50% { opacity:1; transform:scale(1.2); } }
+
+/* NAV */
+.retro-nav {
+  min-height: 31px;
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  align-items: center;
+  padding: 3px 10px;
+  background: #fffde9;
+  border-bottom: 1px solid #d9c98e;
+}
+
+.retro-nav a {
+  padding: 1px 15px;
+  color: #779eb0;
+  font-size: 12px;
+  text-decoration: underline;
+  border-right: 1px dotted #cdb9a9;
+}
+.retro-nav a:last-child { border-right: 0; }
+.retro-nav a:hover { color: var(--pink-dark); }
+
+.site-notice {
+  padding: 5px;
+  text-align: center;
+  color: #a26e7d;
+  font-size: 10px;
+  letter-spacing: .08em;
+  background: #fff7ca;
+  border-bottom: 1px solid #d9c47a;
+}
+
+/* MAIN LAYOUT */
+.retro-main {
+  display: grid;
+  grid-template-columns: 215px minmax(0, 1fr);
+  gap: 8px;
+  padding: 8px;
+  background: #fffdf3;
+}
+
+.sidebar, .main-column {
+  min-width: 0;
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+}
+
+/* BOXES */
+.retro-box {
+  background: #fffef1;
+  border: 1px solid var(--line);
+  box-shadow: inset 0 0 0 1px rgba(255,255,255,.8);
+  overflow: hidden;
+}
+
+.box-heading {
+  min-height: 26px;
+  display: flex;
+  align-items: center;
+  padding: 3px 8px;
+  color: #746249;
+  font-family: Georgia, "Times New Roman", serif;
+  font-size: 13px;
+  font-weight: 700;
+  background: repeating-linear-gradient(0deg, #fff0a5 0, #fff0a5 2px, #fff7c9 2px, #fff7c9 5px);
+  border-bottom: 1px solid var(--yellow-dark);
+}
+
+.pink-heading {
+  color: #9f6276;
+  background: repeating-linear-gradient(0deg, #ffd6e2 0, #ffd6e2 2px, #ffe9f0 2px, #ffe9f0 5px);
+  border-bottom-color: #e3a9bb;
+}
+
+.blue-heading {
+  color: #64889a;
+  background: repeating-linear-gradient(0deg, #c9e8f6 0, #c9e8f6 2px, #e0f3fa 2px, #e0f3fa 5px);
+  border-bottom-color: #a7cedf;
+}
+
+.box-content { padding: 9px; }
+.box-content p { margin: 0 0 9px; }
+.box-content p:last-child { margin-bottom: 0; }
+
+.intro-box { font-size: 12px; }
+.mini-sticker {
+  margin-bottom: 9px;
+  padding: 10px 5px;
+  text-align: center;
+  color: #d77f9c;
+  font-family: "Patrick Hand", cursive;
+  font-size: 19px;
+  line-height: 1.05;
+  background: #fff0f5;
+  border: 1px dashed #e2adbe;
+}
+
+.tiny-links { display: flex; flex-wrap: wrap; gap: 4px; }
+.tiny-links span, .badge { display: inline-block; padding: 2px 7px; border-radius: 9px; font-size: 9px; font-weight: 700; }
+.tiny-links span { background: #fff0a7; border: 1px solid #d8c16c; }
+
+.updates { list-style: none; padding: 0; margin: 0; }
+.updates li { padding: 6px 0; border-bottom: 1px dotted #d8b9a7; font-size: 11px; }
+.updates li:last-child { border-bottom: 0; }
+.updates b { color: #dc8da5; font-size: 10px; }
+
+.side-links { display: flex; flex-direction: column; gap: 4px; }
+.side-links a { color: #d4819b; text-decoration: none; font-size: 11px; }
+.side-links a:hover { text-decoration: underline; }
+
+.counter-box {
+  padding: 9px;
+  text-align: center;
+  background: #fff6fa;
+  border: 1px dotted #d9aebb;
+  color: #a2818a;
+}
+.counter-box span { display: block; font-size: 9px; letter-spacing: .15em; }
+.counter-box strong { display: block; margin-top: 3px; color: #d77f9c; font-family: monospace; font-size: 18px; letter-spacing: .15em; }
+
+/* WELCOME */
+.welcome-box h2 {
+  margin: 0 0 10px;
+  color: #a26954;
+  font-family: "Patrick Hand", "Comic Sans MS", cursive;
+  font-size: clamp(30px, 5vw, 46px);
+  line-height: .9;
+}
+.welcome-box h2 span { color: var(--pink-dark); }
+.welcome-copy { max-width: 640px; font-size: 13px; }
+.stats-row { display: flex; gap: 18px; margin-top: 12px; padding-top: 10px; border-top: 1px dotted #d7b7a5; }
+.stats-row div { display: flex; flex-direction: column; min-width: 65px; }
+.stats-row b { color: #d77f9c; font-family: "Patrick Hand", cursive; font-size: 24px; line-height: 1; }
+.stats-row small { color: #8b7c76; font-size: 9px; }
+
+/* GACHA */
+.gacha-panel {
+  display: grid;
+  grid-template-columns: 1fr 180px;
+  gap: 15px;
+  align-items: center;
+  padding: 12px;
+  background: #fff8ed;
+  border: 1px dashed #ddb59e;
+  background-image: radial-gradient(#f0c0cd 1px, transparent 1px);
+  background-size: 12px 12px;
+}
+.machine { width: 245px; max-width: 100%; margin: auto; filter: drop-shadow(4px 7px 0 rgba(110,75,75,.12)); }
+.machine-sign { padding: 12px 6px; text-align: center; color: white; font-size: 12px; font-weight: 900; letter-spacing: .1em; background: #ef9fb8; border: 4px solid #5c4748; border-bottom: 0; border-radius: 28px 28px 8px 8px; }
+.machine-glass { height: 205px; display: grid; place-items: center; position: relative; overflow: hidden; background: rgba(255,255,255,.82); border: 4px solid #5c4748; }
+.machine-glass:after { content: ""; position: absolute; inset: 7px; border: 1px solid white; pointer-events: none; }
+.capsules { width: 190px; display: flex; flex-wrap: wrap; justify-content: center; gap: 5px; transform: rotate(-5deg); }
+.capsules i { width: 52px; height: 37px; display: grid; place-items: center; border-radius: 50%; border: 3px solid #5c4748; color: white; font-style: normal; background: #ffb7cb; }
+.capsules .c2, .capsules .c5 { background: #ffe0a7; }
+.capsules .c3, .capsules .c6 { background: #b8dceb; }
+.capsule-spin { animation: tumble .3s infinite; }
+@keyframes tumble { 50% { transform: rotate(8deg) translateY(7px); } }
+.mixing { position: absolute; z-index: 3; padding: 7px 12px; color: white; background: #5c4748; border-radius: 20px; font-size: 9px; font-weight: 900; }
+.machine-base { padding: 12px; text-align: center; background: #ef9fb8; border: 4px solid #5c4748; border-top: 0; border-radius: 7px 7px 22px 22px; }
+.slot { width: 55px; margin: -4px auto 10px; padding: 5px; color: white; background: #5c4748; border-radius: 8px; }
+.machine button, .contribute, .again {
+  width: 100%;
+  padding: 9px 12px;
+  color: white;
+  background: #5c4748;
+  border: 2px solid white;
+  border-radius: 16px;
+  box-shadow: 0 0 0 1px #6e5352, 0 2px 0 #493939;
+  font-size: 10px;
+  font-weight: 900;
+}
+.machine button:disabled { opacity: .65; cursor: wait; }
+.gacha-copy { padding: 3px; }
+.tiny-label { color: #d77f9c; font-size: 9px; font-weight: 900; letter-spacing: .12em; }
+.gacha-copy h3 { margin: 5px 0; color: #9c6c58; font-family: "Patrick Hand", cursive; font-size: 28px; line-height: 1; }
+.gacha-copy p { font-size: 11px; }
+.rarities { display: flex; flex-direction: column; gap: 3px; color: #9a7a68; font-size: 9px; }
+.message { color: #d77f9c !important; font-size: 10px !important; font-weight: 700; }
+
+/* UPLOAD */
+.upload-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dropzone {
+  min-height: 260px;
+  position: relative;
+  display: grid;
+  place-items: center;
+  align-content: center;
+  overflow: hidden;
+  text-align: center;
+  background: white;
+  border: 2px dashed #dfcbd2;
+  cursor: pointer;
+}
+.dropzone img { position: absolute; inset: 0; width: 100%; height: 100%; object-fit: cover; }
+.dropzone input { display: none; }
+.dropzone .plus { color: #d77f9c; font-size: 40px; line-height: 1; }
+.dropzone strong { display: block; font-size: 11px; }
+.dropzone small { color: #999; font-size: 9px; }
+.retro-form { display: flex; flex-direction: column; gap: 9px; }
+.retro-form label { display: flex; flex-direction: column; gap: 4px; font-size: 10px; font-weight: 700; }
+.retro-form input, .retro-form textarea {
+  width: 100%;
+  padding: 8px;
+  color: var(--brown);
+  background: #fff;
+  border: 1px solid #d8c1b2;
+  outline: none;
+  border-radius: 2px;
+}
+.retro-form input:focus, .retro-form textarea:focus { border-color: #df9eb3; }
+.retro-form textarea { resize: vertical; }
+.contribute { background: #d985a0; box-shadow: 0 0 0 1px #c47690, 0 2px 0 #a96178; }
+
+/* REVEAL */
+.prize-card { display: grid; grid-template-columns: 42% 1fr; background: white; border: 1px solid #d9bca9; }
+.prize-card img { width: 100%; height: 220px; object-fit: cover; }
+.prize-info { padding: 15px; display: flex; flex-direction: column; justify-content: center; }
+.prize-info h3 { margin: 4px 0; color: #a26954; font-family: "Patrick Hand", cursive; font-size: 30px; line-height: 1; }
+.prize-info p { font-size: 11px; color: #80716b; }
+.prize-info small { color: #aaa; font-size: 9px; }
+.again { width: auto; align-self: flex-start; margin-top: 10px; }
+
+/* GALLERY */
+.gallery { display: grid; grid-template-columns: repeat(3, 1fr); gap: 7px; }
+.gallery-item { padding: 4px; background: white; border: 1px solid #d9bca9; box-shadow: 2px 2px 0 rgba(150,110,90,.12); }
+.gallery-item img { display: block; width: 100%; aspect-ratio: 1 / 1; object-fit: cover; }
+.gallery-item div { padding: 5px 2px 2px; }
+.gallery-item b { display: block; color: #a26954; font-size: 10px; }
+.gallery-item small { display: block; overflow: hidden; white-space: nowrap; text-overflow: ellipsis; color: #999; font-size: 8px; }
+
+/* ABOUT / BADGES */
+.about-box { text-align: center; }
+.divider { margin: 10px 0; color: #e49bb0; font-size: 11px; overflow: hidden; }
+.badge { margin: 2px; color: #80684e; background: #fff0a5; border: 1px solid #d8bd65; }
+.badge.pink { color: #985d71; background: #ffd3e0; border-color: #e2a2b6; }
+.badge.blue { color: #617f90; background: #cbe9f7; border-color: #9fc9dc; }
+
+/* FOOTER */
+.retro-footer { padding: 13px; text-align: center; color: #8ca2a9; font-size: 9px; background: #fff5f8; border-top: 2px dotted #ddb2c0; }
+.retro-footer div { color: #df92aa; font-size: 14px; letter-spacing: 4px; }
+.retro-footer strong { display: block; margin: 2px 0; color: #c97b96; font-family: "Patrick Hand", cursive; font-size: 16px; }
+.retro-footer span, .retro-footer small { display: block; }
+
+@media (max-width: 700px) {
+  .page-shell { padding: 8px 5px 30px; }
+  .site-header { height: 165px; }
+  .site-header h1 { font-size: 58px; }
+  .site-header p { font-size: 15px; }
+  .retro-main { grid-template-columns: 1fr; }
+  .gacha-panel, .upload-grid, .prize-card { grid-template-columns: 1fr; }
+  .gacha-copy { text-align: center; }
+  .machine { width: 230px; }
+  .gallery { grid-template-columns: repeat(2, 1fr); }
+}
